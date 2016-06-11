@@ -51,11 +51,9 @@ done
 if [[ ! ${INTALL_PACKAGES} == "" ]]; then
 	apt-get update
 	apt-get -qq -y --no-install-recommends install ${INTALL_PACKAGES}
-set -x
 	if [[ ! "$( echo ${INTALL_PACKAGES} | grep pbuilder )" == "" ]];then 
 		config_pbuilder
 	fi
-set +x
 fi
 
 }

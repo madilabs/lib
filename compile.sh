@@ -36,6 +36,11 @@ BUILD_ALL="no"						# cycle through available boards and make images or kernel/u
 LIB_TAG=""						# empty for latest version,
 							# one of listed here: https://github.com/igorpecovnik/lib/tags for stable versions,
 							# or commit hash
+							
+BUILD_DEB="yes"						# "yes" or "no" to Build deb
+BUILD_DEB_ARCH="armhf"					# leave empty default = armhf
+BUILD_DEB_DIST="ubuntu"					# "debian" "ubuntu" default debian
+BUILD_DEB_DIST_VERS="xenial"				# "debian" "ubuntu" default debian
 #--------------------------------------------------------------------------------------------------------------------------------
 
 # source is where compile.sh is located
@@ -94,11 +99,15 @@ fi
 #--------------------------------------------------------------------------------------------------------------------------------
 # Do we need to build all images
 #--------------------------------------------------------------------------------------------------------------------------------
-if [[ $BUILD_ALL == yes || $BUILD_ALL == demo ]]; then
-	source $SRC/lib/build-all.sh
-else
-	source $SRC/lib/main.sh
+if [[ $BUILD_DEB == yes ]]; then
+	source $SRC/lib/build-deb.sh ${SRC} ${BUILD_DEB_ARCH} ${BUILD_DEB_DIST} ${BUILD_DEB_DIST_VERS}
 fi
+
+#if [[ $BUILD_ALL == yes || $BUILD_ALL == demo ]]; then
+#	source $SRC/lib/build-all.sh
+#else
+#	source $SRC/lib/main.sh
+#fi
 
 # If you are committing new version of this file, increment VERSION
 # Only integers are supported

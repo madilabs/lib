@@ -190,6 +190,12 @@ if [[ $LINUXFAMILY == sun*i ]]; then
 	[[ $BRANCH != default && $LINUXFAMILY != sun8i ]] && LINUXFAMILY="sunxi"
 fi
 
+# compile Clean Deb Packages
+if [[ ${BUILD_DEB} == "yes" && ${BUILD_DEB_TYPE} == "clean" ]]; then
+	display_alert "Compiling Clean Deb Packages" "$DISTRIBUTION $RELEASE $BRANCH" "info"
+	$SRC/lib/build-deb.sh ${SRC} ${BOARD} ${BRANCH} ${RELEASE} ${BUILD_DESKTOP} 
+fi
+
 # define package names
 DEB_BRANCH=${BRANCH//default}
 # if not empty, append hyphen
@@ -251,13 +257,13 @@ if [[ $KERNEL_ONLY != yes ]]; then
 		install_distribution_specific
 		install_board_specific
 
+		# install external applications
+		[[ $EXTERNAL == yes ]] && install_external_applications
+
 		# install desktop
 		if [[ $BUILD_DESKTOP == yes ]]; then
 			install_desktop
 		fi
-
-		# install external applications
-		[[ $EXTERNAL == yes ]] && install_external_applications
 
 		# closing image
 		closing_image

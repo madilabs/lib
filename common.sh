@@ -334,27 +334,29 @@ for plugin in $SRC/lib/extras/*.sh; do
 	source $plugin
 done
 
-# MISC5 = sunxi display control
-if [[ -n $MISC5_DIR && $BRANCH != next && $LINUXSOURCEDIR == *sunxi* ]]; then
-	cd "$SOURCES/$MISC5_DIR"
-	cp "$SOURCES/$LINUXSOURCEDIR/include/video/sunxi_disp_ioctl.h" .
-	make clean >/dev/null
-	make ARCH=$ARCHITECTURE CC="${KERNEL_COMPILER}gcc" KSRC="$SOURCES/$LINUXSOURCEDIR/" >> $DEST/debug/compilation.log 2>&1
-	install -m 755 a10disp "$CACHEDIR/sdcard/usr/local/bin"
-fi
+if [[ ${BUILD_DEB} == "no" || ${BUILD_DEB} == "yes" && ${BUILD_DEB_TYPE} == "quick" ]];then
+	# MISC5 = sunxi display control
+	if [[ -n $MISC5_DIR && $BRANCH != next && $LINUXSOURCEDIR == *sunxi* ]]; then
+		cd "$SOURCES/$MISC5_DIR"
+		cp "$SOURCES/$LINUXSOURCEDIR/include/video/sunxi_disp_ioctl.h" .
+		make clean >/dev/null
+		make ARCH=$ARCHITECTURE CC="${KERNEL_COMPILER}gcc" KSRC="$SOURCES/$LINUXSOURCEDIR/" >> $DEST/debug/compilation.log 2>&1
+		install -m 755 a10disp "$CACHEDIR/sdcard/usr/local/bin"
+	fi
 
-# MISC5 = sunxi display control / compile it for sun8i just in case sun7i stuff gets ported to sun8i and we're able to use it
-if [[ -n $MISC5_DIR && $BRANCH != next && $LINUXSOURCEDIR == *sun8i* ]]; then
-	cd "$SOURCES/$MISC5_DIR"
-	wget -q "https://raw.githubusercontent.com/linux-sunxi/linux-sunxi/sunxi-3.4/include/video/sunxi_disp_ioctl.h"
-	make clean >/dev/null 2>&1
-	make ARCH=$ARCHITECTURE CC="${KERNEL_COMPILER}gcc" KSRC="$SOURCES/$LINUXSOURCEDIR/" >> $DEST/debug/compilation.log 2>&1
-	install -m 755 a10disp "$CACHEDIR/sdcard/usr/local/bin"
-fi
+	# MISC5 = sunxi display control / compile it for sun8i just in case sun7i stuff gets ported to sun8i and we're able to use it
+	if [[ -n $MISC5_DIR && $BRANCH != next && $LINUXSOURCEDIR == *sun8i* ]]; then
+		cd "$SOURCES/$MISC5_DIR"
+		wget -q "https://raw.githubusercontent.com/linux-sunxi/linux-sunxi/sunxi-3.4/include/video/sunxi_disp_ioctl.h"
+		make clean >/dev/null 2>&1
+		make ARCH=$ARCHITECTURE CC="${KERNEL_COMPILER}gcc" KSRC="$SOURCES/$LINUXSOURCEDIR/" >> $DEST/debug/compilation.log 2>&1
+		install -m 755 a10disp "$CACHEDIR/sdcard/usr/local/bin"
+	fi
 
-# h3disp for sun8i/3.4.x
-if [[ $LINUXFAMILY == sun8i && $BRANCH == default ]]; then
-	install -m 755 "$SRC/lib/scripts/h3disp" "$CACHEDIR/sdcard/usr/local/bin"
+	# h3disp for sun8i/3.4.x
+	if [[ $LINUXFAMILY == sun8i && $BRANCH == default ]]; then
+		install -m 755 "$SRC/lib/scripts/h3disp" "$CACHEDIR/sdcard/usr/local/bin"
+	fi
 fi
 }
 
